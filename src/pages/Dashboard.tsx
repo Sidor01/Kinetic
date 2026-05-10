@@ -121,7 +121,7 @@ export default function Dashboard() {
           </NavLink>
         </nav>
 
-        <div className="user-profile" onClick={handleLogout} style={{ cursor: 'pointer' }} title="Click to logout">
+        <div className="user-profile" onClick={() => navigate('/settings')} style={{ cursor: 'pointer' }} title="Go to settings">
           <div className="user-avatar">
             <span role="img" aria-label="avatar">👨‍💼</span>
           </div>

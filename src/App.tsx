@@ -3,6 +3,7 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Placeholder from './pages/Placeholder';
+import Settings from './pages/Settings';
 import './App.css';
 
 // A simple protected route wrapper
@@ -31,7 +32,7 @@ function App() {
         <Route path="/habits" element={<ProtectedRoute><Placeholder title="Habit List" /></ProtectedRoute>} />
         <Route path="/statistics" element={<ProtectedRoute><Placeholder title="Statistics" /></ProtectedRoute>} />
         <Route path="/rewards" element={<ProtectedRoute><Placeholder title="Rewards" /></ProtectedRoute>} />
-        <Route path="/settings" element={<ProtectedRoute><Placeholder title="Settings" /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
