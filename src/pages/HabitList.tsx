@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
+import LogImmersionModal from '../components/LogImmersionModal';
 import {
   LayoutDashboard,
   CheckSquare,
@@ -48,6 +49,17 @@ export default function HabitList() {
   const [activeTab, setActiveTab] = useState('All Habits');
   const [priorityFilter, setPriorityFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [logModalTarget, setLogModalTarget] = useState<string | null>(null);
+
+  const openLogModal = (habitId: string) => setLogModalTarget(habitId);
+  const closeLogModal = () => setLogModalTarget(null);
+  const handleSeal = (habitId: string, data: { duration: number; notes: string; intensity: 'Light' | 'Deep' }) => {
+    console.log('Sealed', habitId, data);
+    if (habitId === 'plunge') setPlungeDone(true);
+    if (habitId === 'study') setStudyDone(true);
+    if (habitId === 'hydration') setHydrationDone(true);
+    closeLogModal();
+  };
   const [ritualInput, setRitualInput] = useState('');
   const [selectedArchetype, setSelectedArchetype] = useState('Health');
 
@@ -62,9 +74,9 @@ export default function HabitList() {
     { name: "Mindful Breathing", category: "Mindfulness" },
     { name: "Stretch / Yoga", category: "Health" }
   ];
-  
-  const filteredSuggestions = ritualInput.trim() === '' 
-    ? allSuggestions.filter(s => s.category === selectedArchetype).slice(0, 4) 
+
+  const filteredSuggestions = ritualInput.trim() === ''
+    ? allSuggestions.filter(s => s.category === selectedArchetype).slice(0, 4)
     : allSuggestions.filter(s => s.name.toLowerCase().includes(ritualInput.toLowerCase())).slice(0, 4);
 
   if (!user) {
@@ -77,7 +89,7 @@ export default function HabitList() {
       {/* Sidebar */}
       <div className="dashboard-sidebar">
         <div className="sidebar-logo">Kinetic</div>
-        
+
         <nav className="sidebar-nav">
           <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"} end>
             <LayoutDashboard className="nav-icon" size={20} />
@@ -128,11 +140,11 @@ export default function HabitList() {
           <h1>The Ritual <span className="purple">Stack</span></h1>
           <div className="hl-header-row">
             <p className="hl-subtitle">
-              Designing your reality through consistent, intentional movement.<br/>
+              Designing your reality through consistent, intentional movement.<br />
               You have 4 tasks remaining for today's optimal performance cycle.
             </p>
             <div className="hl-controls">
-              <button 
+              <button
                 className="hl-btn-control"
                 onClick={() => {
                   const nextPrio = priorityFilter === 'All' ? 'High' : priorityFilter === 'High' ? 'Medium' : priorityFilter === 'Medium' ? 'Low' : 'All';
@@ -147,7 +159,7 @@ export default function HabitList() {
 
         <div className="hl-tabs">
           {['All Habits', 'Health', 'Productivity', 'Learning', 'Mindfulness'].map(tab => (
-            <button 
+            <button
               key={tab}
               className={`hl-tab ${activeTab === tab ? 'active' : ''}`}
               onClick={() => setActiveTab(tab)}
@@ -158,129 +170,129 @@ export default function HabitList() {
         </div>
 
         <div className="hl-grid">
-          
+
           {/* Card 1: 6am Cold Plunge (Large) - High Priority */}
           {(activeTab === 'All Habits' || activeTab === 'Health') && (priorityFilter === 'All' || priorityFilter === 'High') && (
-          <div className="hl-card large">
-            <span className="hl-card-tag tag-health">HEALTH</span>
-            <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              6am Cold Plunge
-            </h3>
-            
-            <div className="hl-progress-circle-wrap">
-              <div className="hl-circle"><span>85%</span></div>
-              <div className="hl-streak">12 DAY STREAK</div>
-            </div>
+            <div className="hl-card large">
+              <span className="hl-card-tag tag-health">HEALTH</span>
+              <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                6am Cold Plunge
+              </h3>
 
-            <div className="hl-card-meta">
-              <span>🕒 Daily</span>
-              <span>⚡ High Difficulty</span>
-            </div>
-
-            <div className="hl-large-bottom">
-              <div className="hl-days">
-                <div className="hl-day active">M</div>
-                <div className="hl-day active">T</div>
-                <div className="hl-day active">W</div>
-                <div className="hl-day">T</div>
-                <div className="hl-day">F</div>
+              <div className="hl-progress-circle-wrap">
+                <div className="hl-circle"><span>85%</span></div>
+                <div className="hl-streak">12 DAY STREAK</div>
               </div>
-              <button 
-                className={plungeDone ? "hl-btn-done" : "hl-btn-not-done"} 
-                onClick={() => setPlungeDone(!plungeDone)}
-                style={!plungeDone ? { width: 'auto', marginTop: 0 } : undefined}
-              >
-                <CheckCircle2 size={20} strokeWidth={2.5} /> {plungeDone ? 'Mark Done' : 'Not Done'}
-              </button>
+
+              <div className="hl-card-meta">
+                <span>🕒 Daily</span>
+                <span>⚡ High Difficulty</span>
+              </div>
+
+              <div className="hl-large-bottom">
+                <div className="hl-days">
+                  <div className="hl-day active">M</div>
+                  <div className="hl-day active">T</div>
+                  <div className="hl-day active">W</div>
+                  <div className="hl-day">T</div>
+                  <div className="hl-day">F</div>
+                </div>
+                <button
+                  className={plungeDone ? "hl-btn-done" : "hl-btn-not-done"}
+                  onClick={() => plungeDone ? setPlungeDone(false) : openLogModal('plunge')}
+                  style={!plungeDone ? { width: 'auto', marginTop: 0 } : undefined}
+                >
+                  <CheckCircle2 size={20} strokeWidth={2.5} /> {plungeDone ? 'Mark Done' : 'Not Done'}
+                </button>
+              </div>
             </div>
-          </div>
           )}
 
           {/* Card 2: Algorithm Study - Medium Priority */}
           {(activeTab === 'All Habits' || activeTab === 'Learning') && (priorityFilter === 'All' || priorityFilter === 'Medium') && (
-          <div className="hl-card">
-            <span className="hl-card-tag tag-learning">LEARNING</span>
-            <h3>Algorithm Study</h3>
-            <p>Mastering dynamic programming structures.</p>
-            
-            <div className="hl-small-meta">
-              <div className="hl-meta-row">
-                <span>DIFFICULTY</span>
-                <span className="blue">Medium</span>
-              </div>
-              <div className="hl-meta-row">
-                <span>FREQUENCY</span>
-                <span style={{ color: '#ffffff', fontWeight: 600 }}>3x Week</span>
-              </div>
-            </div>
+            <div className="hl-card">
+              <span className="hl-card-tag tag-learning">LEARNING</span>
+              <h3>Algorithm Study</h3>
+              <p>Mastering dynamic programming structures.</p>
 
-            <button 
-              className={studyDone ? "hl-btn-done" : "hl-btn-not-done"} 
-              onClick={() => setStudyDone(!studyDone)}
-              style={studyDone ? { width: '100%', marginTop: '24px', justifyContent: 'center' } : undefined}
-            >
-              <CheckCircle2 size={16} strokeWidth={2.5} /> {studyDone ? 'Mark Done' : 'Not Done'}
-            </button>
-          </div>
+              <div className="hl-small-meta">
+                <div className="hl-meta-row">
+                  <span>DIFFICULTY</span>
+                  <span className="blue">Medium</span>
+                </div>
+                <div className="hl-meta-row">
+                  <span>FREQUENCY</span>
+                  <span style={{ color: '#ffffff', fontWeight: 600 }}>3x Week</span>
+                </div>
+              </div>
+
+              <button
+                className={studyDone ? "hl-btn-done" : "hl-btn-not-done"}
+                onClick={() => studyDone ? setStudyDone(false) : openLogModal('study')}
+                style={studyDone ? { width: '100%', marginTop: '24px', justifyContent: 'center' } : undefined}
+              >
+                <CheckCircle2 size={16} strokeWidth={2.5} /> {studyDone ? 'Mark Done' : 'Not Done'}
+              </button>
+            </div>
           )}
 
           {/* Card 3: Deep Work - High Priority */}
           {(activeTab === 'All Habits' || activeTab === 'Productivity') && (priorityFilter === 'All' || priorityFilter === 'High') && (
-          <div className="hl-card">
-            <span className="hl-card-tag tag-productivity">PRODUCTIVITY</span>
-            <div className="hl-icon-top-right" style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: '#4ade80', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Check size={16} color="#18181b" strokeWidth={3} />
-            </div>
-            
-            <h3>Deep Work</h3>
-            <p>90 minutes of focused output.</p>
-
-            <div className="hl-status-box">
-              <div>
-                <div className="hl-status-label">STATUS</div>
-                <div className="hl-status-val">Completed Today</div>
+            <div className="hl-card">
+              <span className="hl-card-tag tag-productivity">PRODUCTIVITY</span>
+              <div className="hl-icon-top-right" style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: '#4ade80', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Check size={16} color="#18181b" strokeWidth={3} />
               </div>
-              <div className="hl-status-num">01</div>
+
+              <h3>Deep Work</h3>
+              <p>90 minutes of focused output.</p>
+
+              <div className="hl-status-box">
+                <div>
+                  <div className="hl-status-label">STATUS</div>
+                  <div className="hl-status-val">Completed Today</div>
+                </div>
+                <div className="hl-status-num">01</div>
+              </div>
             </div>
-          </div>
           )}
 
-          {/* Card 4: Evening Reflection - Low Priority */}
+          {/* Card 4: Daily Meditation - Low Priority */}
           {(activeTab === 'All Habits' || activeTab === 'Mindfulness') && (priorityFilter === 'All' || priorityFilter === 'Low') && (
-          <div className="hl-card hl-card-glow">
-            <span className="hl-card-tag tag-mindfulness">MINDFULNESS</span>
-            <h3>Evening Reflection</h3>
-            <p>Gratitude and tomorrow's intent.</p>
+            <div className="hl-card hl-card-glow" style={{ cursor: 'pointer' }} onClick={() => navigate('/habits/daily-meditation')}>
+              <span className="hl-card-tag tag-mindfulness">MINDFULNESS</span>
+              <h3>Daily Meditation</h3>
+              <p>Mindfulness and mental clarity session.</p>
 
-            <div className="hl-progress-line-wrap">
-              <div className="hl-progress-line"><div className="hl-progress-line-fill"></div></div>
-              <div className="hl-progress-text">2/7 DAYS</div>
+              <div className="hl-progress-line-wrap">
+                <div className="hl-progress-line"><div className="hl-progress-line-fill" style={{ width: '28%' }}></div></div>
+                <div className="hl-progress-text">2/7 DAYS</div>
+              </div>
             </div>
-          </div>
           )}
 
           {/* Card 5: Hydration Goal - Low Priority */}
           {(activeTab === 'All Habits' || activeTab === 'Health') && (priorityFilter === 'All' || priorityFilter === 'Low') && (
-          <div className="hl-card" style={{ display: 'flex', justifyContent: 'center' }}>
-            <div className="hl-center-content">
-              <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                <div className="hl-icon-circle">
-                  <Droplet size={24} />
+            <div className="hl-card" style={{ display: 'flex', justifyContent: 'center' }}>
+              <div className="hl-center-content">
+                <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                  <div className="hl-icon-circle">
+                    <Droplet size={24} />
+                  </div>
+                  <div className="hl-center-text">
+                    <h3 style={{ fontSize: '18px', margin: '0 0 4px 0' }}>Hydration Goal</h3>
+                    <p style={{ margin: 0 }}>3.5L Intake</p>
+                  </div>
                 </div>
-                <div className="hl-center-text">
-                  <h3 style={{ fontSize: '18px', margin: '0 0 4px 0' }}>Hydration Goal</h3>
-                  <p style={{ margin: 0 }}>3.5L Intake</p>
-                </div>
+                <button
+                  className="hl-btn-plus"
+                  onClick={() => hydrationDone ? setHydrationDone(false) : openLogModal('hydration')}
+                  style={hydrationDone ? { backgroundColor: '#bbf7d0', color: '#166534' } : undefined}
+                >
+                  {hydrationDone ? <Check size={20} strokeWidth={2.5} /> : <Plus size={20} />}
+                </button>
               </div>
-              <button 
-                className="hl-btn-plus"
-                onClick={() => setHydrationDone(!hydrationDone)}
-                style={hydrationDone ? { backgroundColor: '#bbf7d0', color: '#166534' } : undefined}
-              >
-                {hydrationDone ? <Check size={20} strokeWidth={2.5} /> : <Plus size={20} />}
-              </button>
             </div>
-          </div>
           )}
 
         </div>
@@ -306,7 +318,7 @@ export default function HabitList() {
               <button className="hl-modal-close" onClick={() => setIsModalOpen(false)}>
                 <X size={16} />
               </button>
-              
+
               <div className="hl-modal-header">
                 <h2>Define Your Ritual</h2>
                 <p>Establish the parameters of your new habit.</p>
@@ -316,20 +328,20 @@ export default function HabitList() {
                 <label className="hl-modal-label">RITUAL DESIGNATION</label>
                 <div className="hl-input-wrapper">
                   <Edit size={16} className="modal-icon" />
-                  <input 
-                    type="text" 
-                    placeholder="e.g., Morning Meditation" 
+                  <input
+                    type="text"
+                    placeholder="e.g., Morning Meditation"
                     value={ritualInput}
                     onChange={(e) => setRitualInput(e.target.value)}
                   />
                 </div>
-                
+
                 {filteredSuggestions.length > 0 && (
                   <div className="hl-suggestions">
                     <label className="hl-modal-label dim" style={{ marginBottom: '8px' }}>SUGGESTED RITUALS</label>
                     {filteredSuggestions.map((sug) => (
-                      <div 
-                        key={sug.name} 
+                      <div
+                        key={sug.name}
                         className="hl-suggestion-item"
                         onClick={() => {
                           setRitualInput(sug.name);
@@ -354,7 +366,7 @@ export default function HabitList() {
                 </div>
               </div>
 
-              <button 
+              <button
                 className="hl-submit-btn"
                 onClick={() => {
                   setRitualInput('');
@@ -369,6 +381,13 @@ export default function HabitList() {
         )}
 
       </div>
+
+      {logModalTarget && (
+        <LogImmersionModal
+          onClose={closeLogModal}
+          onSeal={(data) => handleSeal(logModalTarget, data)}
+        />
+      )}
     </div>
   );
 }
