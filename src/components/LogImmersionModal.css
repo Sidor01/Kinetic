@@ -1,0 +1,171 @@
+.lim-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(9, 9, 11, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lim-modal {
+  background-color: #121214;
+  width: 380px;
+  border-radius: 20px;
+  padding: 32px;
+  position: relative;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
+  border: 1px solid #27272a;
+}
+
+.lim-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: #18181b;
+  border: none;
+  color: #a1a1aa;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.lim-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: #ffffff;
+}
+
+.lim-header p {
+  font-size: 12px;
+  color: #a1a1aa;
+  margin: 0 0 32px 0;
+}
+
+.lim-section {
+  margin-bottom: 24px;
+}
+
+.lim-section label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #a1a1aa;
+  margin-bottom: 12px;
+}
+
+.lim-duration-picker {
+  background-color: #18181b;
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lim-dur-btn {
+  background: #27272a;
+  border: none;
+  color: #a1a1aa;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.lim-dur-btn:hover {
+  background: #3f3f46;
+  color: #ffffff;
+}
+
+.lim-dur-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #c084fc;
+}
+
+.lim-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #18181b;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  color: #ffffff;
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+}
+
+.lim-textarea::placeholder {
+  color: #52525b;
+}
+
+.lim-intensity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.lim-int-btn {
+  background-color: #18181b;
+  border: 1px solid transparent;
+  padding: 14px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #a1a1aa;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.lim-int-btn.active {
+  background-color: #2e2246;
+  color: #ffffff;
+}
+
+.lim-int-btn.active .lim-int-icon {
+  color: #c084fc;
+}
+
+.lim-seal-btn {
+  width: 100%;
+  background: linear-gradient(90deg, #b07cf0, #875afb);
+  color: #ffffff;
+  border: none;
+  padding: 16px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-top: 32px;
+  box-shadow: 0 4px 14px rgba(135, 90, 251, 0.4);
+}
+
+.lim-seal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(135, 90, 251, 0.6);
+}

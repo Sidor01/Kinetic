@@ -2,10 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
-<<<<<<< HEAD
 import HabitList from './pages/HabitList';
-=======
->>>>>>> 553f5ba4b0e8a13ba7b6a2e51a5a2da951bcc6df
+import HabitDetail from './pages/HabitDetail';
 import Placeholder from './pages/Placeholder';
 import Settings from './pages/Settings';
 import './App.css';
@@ -33,11 +31,8 @@ function App() {
             </ProtectedRoute>
           } 
         />
-<<<<<<< HEAD
         <Route path="/habits" element={<ProtectedRoute><HabitList /></ProtectedRoute>} />
-=======
-        <Route path="/habits" element={<ProtectedRoute><Placeholder title="Habit List" /></ProtectedRoute>} />
->>>>>>> 553f5ba4b0e8a13ba7b6a2e51a5a2da951bcc6df
+        <Route path="/habits/daily-meditation" element={<ProtectedRoute><HabitDetail /></ProtectedRoute>} />
         <Route path="/statistics" element={<ProtectedRoute><Placeholder title="Statistics" /></ProtectedRoute>} />
         <Route path="/rewards" element={<ProtectedRoute><Placeholder title="Rewards" /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
