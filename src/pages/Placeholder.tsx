@@ -13,11 +13,6 @@ import './Dashboard.css';
 export default function Placeholder({ title }: { title: string }) {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('kinetic_currentUser');
-    navigate('/login');
-  };
-
   return (
     <div className="dashboard-container">
       {/* Sidebar */}
