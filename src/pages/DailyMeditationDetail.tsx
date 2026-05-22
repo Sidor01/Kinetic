@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { ArrowLeft, HeartPulse, CheckCircle2 } from 'lucide-react';
 import LogImmersionModal from '../components/LogImmersionModal';
 import AppSidebar from '../components/AppSidebar';
@@ -12,12 +13,6 @@ import type { Note } from '../components/JournalCard';
 import AchievementCard from '../components/AchievementCard';
 import './Dashboard.css';
 import './HabitDetail.css';
-
-interface User {
-    id?: string;
-    name?: string;
-    email: string;
-}
 
 const TREND_DAYS_14 = ['M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const TREND_HEIGHTS_14 = [40, 60, 30, 70, 50, 40, 20, 80, 50, 60, 60, 60, 20, 50];
@@ -40,15 +35,7 @@ function generateMatrixData(): string[][] {
 
 export default function DailyMeditationDetail() {
     const navigate = useNavigate();
-    const [user] = useState<User | null>(() => {
-        const str = localStorage.getItem('kinetic_currentUser');
-        return str ? JSON.parse(str) : null;
-    });
-
-    if (!user) {
-        navigate('/login', { replace: true });
-        return null;
-    }
+    useAuth();
 
     const [matrixData] = useState(generateMatrixData);
     const [trendPeriod, setTrendPeriod] = useState<14 | 30>(14);

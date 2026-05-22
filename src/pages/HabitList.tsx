@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import LogImmersionModal from '../components/LogImmersionModal';
 import AppSidebar from '../components/AppSidebar';
 import AppHeader from '../components/AppHeader';
@@ -23,19 +24,9 @@ import {
 import './Dashboard.css';
 import './HabitList.css';
 
-interface User {
-  id?: string;
-  name?: string;
-  email: string;
-}
-
 export default function HabitList() {
   const navigate = useNavigate();
-  const [user] = useState<User | null>(() => {
-    const userStr = localStorage.getItem('kinetic_currentUser');
-    if (!userStr) return null;
-    return JSON.parse(userStr);
-  });
+  useAuth();
 
   const [plungeDone, setPlungeDone] = useState(true);
   const [studyDone, setStudyDone] = useState(false);
@@ -73,10 +64,6 @@ export default function HabitList() {
     ? allSuggestions.filter(s => s.category === selectedArchetype).slice(0, 4)
     : allSuggestions.filter(s => s.name.toLowerCase().includes(ritualInput.toLowerCase())).slice(0, 4);
 
-  if (!user) {
-    navigate('/login', { replace: true });
-    return null;
-  }
 
   return (
     <div className="dashboard-container">

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import {
   Droplet,
   Check,
@@ -14,19 +15,8 @@ import AppSidebar from '../components/AppSidebar';
 import AppHeader from '../components/AppHeader';
 import './Dashboard.css';
 
-interface User {
-  id?: string;
-  name?: string;
-  email: string;
-}
-
 export default function Dashboard() {
-  const navigate = useNavigate();
-  const [user, _setUser] = useState<User | null>(() => {
-    const userStr = localStorage.getItem('kinetic_currentUser');
-    if (!userStr) return null;
-    return JSON.parse(userStr);
-  });
+  const { user } = useAuth();
 
   const [hydrationProgress, setHydrationProgress] = useState(() => {
     const saved = localStorage.getItem('kinetic_hydration');
@@ -40,7 +30,7 @@ export default function Dashboard() {
     const saved = localStorage.getItem('kinetic_weight');
     return saved ? JSON.parse(saved) : false;
   });
-  const [stats, _setStats] = useState(() => {
+  const [stats] = useState(() => {
     const saved = localStorage.getItem('kinetic_stats');
     return saved ? JSON.parse(saved) : {
       dayStreak: 15,
@@ -57,10 +47,6 @@ export default function Dashboard() {
     localStorage.setItem('kinetic_stats', JSON.stringify(stats));
   }, [hydrationProgress, meditationDone, weightDone, stats]);
 
-  if (!user) {
-    navigate('/login', { replace: true });
-    return null;
-  }
 
   const completedTasksCount = hydrationProgress + (meditationDone ? 1 : 0) + (weightDone ? 1 : 0);
   const totalTasksCount = 5;
@@ -92,7 +78,7 @@ export default function Dashboard() {
         {/* Hero */}
         <div className="hero-section">
           <div className="hero-content">
-            <h1>Hello, {user.name || 'Architect'}.</h1>
+            <h1>Hello, {user?.displayName || 'Architect'}.</h1>
             <p>Your momentum is your legacy. You've completed {orbitPercentage}% of your targets this week.</p>
           </div>
           <div className="hero-stats">

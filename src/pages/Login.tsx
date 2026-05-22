@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 import './Auth.css';
 
 export default function Login() {
@@ -7,9 +9,10 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -18,16 +21,23 @@ export default function Login() {
       return;
     }
 
-    const usersStr = localStorage.getItem('kinetic_users');
-    const users = usersStr ? JSON.parse(usersStr) : [];
-    
-    const user = users.find((u: { email: string; password?: string }) => u.email === email && u.password === password);
-
-    if (user) {
-      localStorage.setItem('kinetic_currentUser', JSON.stringify(user));
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       navigate('/');
-    } else {
-      setError('Invalid email or password');
+    } catch (err: unknown) {
+      const code = (err as { code?: string }).code;
+      if (
+        code === 'auth/user-not-found' ||
+        code === 'auth/wrong-password' ||
+        code === 'auth/invalid-credential'
+      ) {
+        setError('Invalid email or password');
+      } else {
+        setError('Login failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,12 +49,12 @@ export default function Login() {
         </div>
         <p className="auth-subtitle">Forge your path. Track your momentum.</p>
 
-        
+
         {/* Adds spacing similar to the design */}
         <div style={{ height: '40px' }}></div>
-        
+
         {error && <div className="auth-error">{error}</div>}
-        
+
         <form className="auth-form" onSubmit={handleLogin}>
           <div className="input-group">
             <label htmlFor="email">Email</label>
@@ -59,7 +69,7 @@ export default function Login() {
               />
             </div>
           </div>
-          
+
           <div className="input-group">
             <label htmlFor="password">Password</label>
             <div className="input-wrapper">
@@ -71,14 +81,14 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="input-icon-right"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label="Toggle password visibility"
               >
                 {showPassword ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
                 ) : (
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
                 )}
@@ -90,11 +100,11 @@ export default function Login() {
             <a href="#">Forgot Password?</a>
           </div>
 
-          <button type="submit" className="auth-button">
-            Enter Flow <span>→</span>
+          <button type="submit" className="auth-button" disabled={loading}>
+            {loading ? 'Signing in…' : 'Enter Flow'} <span>→</span>
           </button>
         </form>
-        
+
         <div className="auth-footer">
           New to the Kinetic? <Link to="/register" className="auth-link">Create account</Link>
         </div>
