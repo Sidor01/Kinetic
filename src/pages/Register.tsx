@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from '../firebase';
 import './Auth.css';
 
 export default function Register() {
@@ -7,9 +9,10 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -18,22 +21,26 @@ export default function Register() {
       return;
     }
 
-    const usersStr = localStorage.getItem('kinetic_users');
-    const users = usersStr ? JSON.parse(usersStr) : [];
-
-    const existingUser = users.find((u: { email: string }) => u.email === email);
-    if (existingUser) {
-      setError('Account with this email already exists');
-      return;
+    setLoading(true);
+    try {
+      console.log('[Register] calling createUserWithEmailAndPassword...');
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      console.log('[Register] SUCCESS — UID:', cred.user.uid, 'email:', cred.user.email);
+      await updateProfile(cred.user, { displayName: name });
+      navigate('/');
+    } catch (err: unknown) {
+      console.error('[Register] FAILED:', err);
+      const code = (err as { code?: string }).code;
+      if (code === 'auth/email-already-in-use') {
+        setError('Account with this email already exists');
+      } else if (code === 'auth/weak-password') {
+        setError('Password must be at least 6 characters');
+      } else {
+        setError(`Registration failed (${code ?? 'unknown'}). Check the browser console for details.`);
+      }
+    } finally {
+      setLoading(false);
     }
-
-    const newUser = { id: Date.now().toString(), name, email, password };
-    users.push(newUser);
-    localStorage.setItem('kinetic_users', JSON.stringify(users));
-    
-    // Automatically log the user in
-    localStorage.setItem('kinetic_currentUser', JSON.stringify(newUser));
-    navigate('/');
   };
 
   return (
@@ -43,9 +50,9 @@ export default function Register() {
           <span className="kin">Kin</span><span className="etic">etic</span>
         </div>
         <p className="auth-subtitle">Forge your path. Track your momentum.</p>
-        
+
         {error && <div className="auth-error">{error}</div>}
-        
+
         <form className="auth-form" onSubmit={handleRegister}>
           <div className="input-group">
             <label htmlFor="name">Full Name</label>
@@ -60,7 +67,7 @@ export default function Register() {
               />
             </div>
           </div>
-          
+
           <div className="input-group">
             <label htmlFor="email">Email</label>
             <div className="input-wrapper">
@@ -74,7 +81,7 @@ export default function Register() {
               />
             </div>
           </div>
-          
+
           <div className="input-group">
             <label htmlFor="password">Password</label>
             <div className="input-wrapper">
@@ -89,11 +96,11 @@ export default function Register() {
             </div>
           </div>
 
-          <button type="submit" className="auth-button" style={{ marginTop: '16px' }}>
-            Initiate Ritual <span>→</span>
+          <button type="submit" className="auth-button" style={{ marginTop: '16px' }} disabled={loading}>
+            {loading ? 'Creating account…' : 'Initiate Ritual'} <span>→</span>
           </button>
         </form>
-        
+
         <div className="auth-footer">
           Already part of the flow? <Link to="/login" className="auth-link">Log in</Link>
         </div>
