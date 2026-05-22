@@ -210,7 +210,7 @@ export default function HabitList() {
 
           {/* Card 2: Algorithm Study - Medium Priority */}
           {(activeTab === 'All Habits' || activeTab === 'Learning') && (priorityFilter === 'All' || priorityFilter === 'Medium') && (
-            <div className="hl-card">
+            <div className="hl-card" style={{ cursor: 'pointer' }} onClick={() => navigate('/habits/algorithm-study')}>
               <span className="hl-card-tag tag-learning">LEARNING</span>
               <h3>Algorithm Study</h3>
               <p>Mastering dynamic programming structures.</p>
