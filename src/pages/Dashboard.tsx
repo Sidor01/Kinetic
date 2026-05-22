@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link, NavLink } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  CheckSquare,
-  BarChart2,
-  Trophy,
-  Settings,
-  Bell,
-  Zap,
   Droplet,
   Check,
   Dumbbell,
@@ -17,6 +10,8 @@ import {
   Lock,
   Activity
 } from 'lucide-react';
+import AppSidebar from '../components/AppSidebar';
+import AppHeader from '../components/AppHeader';
 import './Dashboard.css';
 
 interface User {
@@ -94,54 +89,11 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar */}
-      <div className="dashboard-sidebar">
-        <div className="sidebar-logo">Kinetic</div>
-        
-        <nav className="sidebar-nav">
-          <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"} end>
-            <LayoutDashboard className="nav-icon" size={20} />
-            <span>Dashboard</span>
-          </NavLink>
-          <NavLink to="/habits" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-            <CheckSquare className="nav-icon" size={20} />
-            <span>Habit List</span>
-          </NavLink>
-          <NavLink to="/statistics" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-            <BarChart2 className="nav-icon" size={20} />
-            <span>Statistics</span>
-          </NavLink>
-          <NavLink to="/rewards" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-            <Trophy className="nav-icon" size={20} />
-            <span>Rewards</span>
-          </NavLink>
-          <NavLink to="/settings" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-            <Settings className="nav-icon" size={20} />
-            <span>Settings</span>
-          </NavLink>
-        </nav>
-
-        <div className="user-profile" onClick={() => navigate('/settings')} style={{ cursor: 'pointer' }} title="Go to settings">
-          <div className="user-avatar">
-            <span role="img" aria-label="avatar">👨‍💼</span>
-          </div>
-          <div className="user-info">
-            <span className="user-level">Level 24</span>
-            <span className="user-title">Master Architect</span>
-          </div>
-        </div>
-      </div>
+      <AppSidebar />
 
       {/* Main Content */}
       <div className="dashboard-main">
-        {/* Header */}
-        <div className="header-top">
-          <Bell size={24} color="#a1a1aa" />
-          <div className="pts-badge">
-            <Zap size={16} fill="currentColor" />
-            1,250 PTS
-          </div>
-        </div>
+        <AppHeader />
 
         {/* Hero */}
         <div className="hero-section">
@@ -164,7 +116,7 @@ export default function Dashboard() {
         <div className="grid-layout">
           {/* Left Column */}
           <div className="column-left" style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
-            
+
             {/* Today's Pulse */}
             <div className="section">
               <div className="section-header">
@@ -172,7 +124,7 @@ export default function Dashboard() {
                 <Link to="/habits" className="section-link">View Schedule &rarr;</Link>
               </div>
               <div className="task-list">
-                
+
                 <div className="task-card">
                   <div className="task-icon blue">
                     <Droplet size={24} />
@@ -183,7 +135,7 @@ export default function Dashboard() {
                   </div>
                   <div className="task-progress">
                     {[0, 1, 2].map(index => (
-                      <div 
+                      <div
                         key={index}
                         onClick={() => toggleHydration(index)}
                         className={`progress-circle ${hydrationProgress > index ? 'active' : ''}`}
@@ -204,7 +156,7 @@ export default function Dashboard() {
                     <div className="task-meta">Target: 20 Minutes • <span className={meditationDone ? "green" : ""}>{meditationDone ? 'Completed' : 'Upcoming'}</span></div>
                   </div>
                   <div className="task-progress">
-                    <div 
+                    <div
                       onClick={() => setMeditationDone(!meditationDone)}
                       className={`progress-circle ${meditationDone ? 'completed' : ''}`}
                       style={{ cursor: 'pointer' }}
@@ -223,7 +175,7 @@ export default function Dashboard() {
                     <div className="task-meta">Target: Upper Body • <span className={weightDone ? "green" : ""}>{weightDone ? 'Completed' : 'Upcoming'}</span></div>
                   </div>
                   <div className="task-progress">
-                    <div 
+                    <div
                       onClick={() => setWeightDone(!weightDone)}
                       className={`progress-circle ${weightDone ? 'completed' : ''}`}
                       style={{ cursor: 'pointer' }}
@@ -242,7 +194,7 @@ export default function Dashboard() {
                 <h2 className="section-title">Unlocked Potential</h2>
               </div>
               <div className="potential-grid">
-                
+
                 <div className="potential-card">
                   <div className="potential-icon green">
                     <Star size={32} />
@@ -282,11 +234,11 @@ export default function Dashboard() {
 
           {/* Right Column */}
           <div className="column-right" style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            
+
             {/* Daily Orbit */}
             <div className="orbit-card">
               <h2 className="section-title" style={{ marginBottom: 0 }}>Daily Orbit</h2>
-              <div 
+              <div
                 className="orbit-circle"
                 style={{ background: `conic-gradient(#38bdf8 0%, #a855f7 ${orbitPercentage}%, #27272a ${orbitPercentage}%)` }}
               >
@@ -332,8 +284,8 @@ export default function Dashboard() {
                     <span>{currentXP}/{milestoneMax}</span>
                   </div>
                   <div className="progress-bar">
-                    <div 
-                      className="progress-fill" 
+                    <div
+                      className="progress-fill"
                       style={{ width: `${milestoneProgressPercentage}%`, transition: 'width 0.3s ease-out' }}
                     ></div>
                   </div>

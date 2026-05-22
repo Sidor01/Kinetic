@@ -3,7 +3,7 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import HabitList from './pages/HabitList';
-import HabitDetail from './pages/HabitDetail';
+import DailyMeditationDetail from './pages/DailyMeditationDetail';
 import AlgorithmStudyDetail from './pages/AlgorithmStudyDetail';
 import Placeholder from './pages/Placeholder';
 import Settings from './pages/Settings';
@@ -33,7 +33,7 @@ function App() {
           }
         />
         <Route path="/habits" element={<ProtectedRoute><HabitList /></ProtectedRoute>} />
-        <Route path="/habits/daily-meditation" element={<ProtectedRoute><HabitDetail /></ProtectedRoute>} />
+        <Route path="/habits/daily-meditation" element={<ProtectedRoute><DailyMeditationDetail /></ProtectedRoute>} />
         <Route path="/habits/algorithm-study" element={<ProtectedRoute><AlgorithmStudyDetail /></ProtectedRoute>} />
         <Route path="/statistics" element={<ProtectedRoute><Placeholder title="Statistics" /></ProtectedRoute>} />
         <Route path="/rewards" element={<ProtectedRoute><Placeholder title="Rewards" /></ProtectedRoute>} />

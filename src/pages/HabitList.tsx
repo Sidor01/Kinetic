@@ -1,19 +1,12 @@
 import { useState } from 'react';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LogImmersionModal from '../components/LogImmersionModal';
+import AppSidebar from '../components/AppSidebar';
+import AppHeader from '../components/AppHeader';
 import {
-  LayoutDashboard,
-  CheckSquare,
-  BarChart2,
-  Trophy,
-  Settings,
-  Bell,
-  Zap,
-  Filter,
   ArrowUpDown,
   CheckCircle2,
   Check,
-  MoreVertical,
   Droplet,
   Plus,
   ChevronDown,
@@ -24,7 +17,8 @@ import {
   BookOpen,
   Flower2,
   Grid,
-  BadgeCheck
+  BadgeCheck,
+  Zap
 } from 'lucide-react';
 import './Dashboard.css';
 import './HabitList.css';
@@ -86,54 +80,11 @@ export default function HabitList() {
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar */}
-      <div className="dashboard-sidebar">
-        <div className="sidebar-logo">Kinetic</div>
-
-        <nav className="sidebar-nav">
-          <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"} end>
-            <LayoutDashboard className="nav-icon" size={20} />
-            <span>Dashboard</span>
-          </NavLink>
-          <NavLink to="/habits" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-            <CheckSquare className="nav-icon" size={20} />
-            <span>Habit List</span>
-          </NavLink>
-          <NavLink to="/statistics" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-            <BarChart2 className="nav-icon" size={20} />
-            <span>Statistics</span>
-          </NavLink>
-          <NavLink to="/rewards" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-            <Trophy className="nav-icon" size={20} />
-            <span>Rewards</span>
-          </NavLink>
-          <NavLink to="/settings" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-            <Settings className="nav-icon" size={20} />
-            <span>Settings</span>
-          </NavLink>
-        </nav>
-
-        <div className="user-profile" onClick={() => navigate('/settings')} style={{ cursor: 'pointer' }} title="Go to settings">
-          <div className="user-avatar">
-            <span role="img" aria-label="avatar">👨‍💼</span>
-          </div>
-          <div className="user-info">
-            <span className="user-level">Level 24</span>
-            <span className="user-title">Master Architect</span>
-          </div>
-        </div>
-      </div>
+      <AppSidebar />
 
       {/* Main Content */}
       <div className="dashboard-main">
-        {/* Header */}
-        <div className="header-top">
-          <Bell size={24} color="#a1a1aa" />
-          <div className="pts-badge">
-            <Zap size={16} fill="currentColor" />
-            1,250 PTS
-          </div>
-        </div>
+        <AppHeader />
 
         {/* Habit List specific content */}
         <div className="hl-header">
