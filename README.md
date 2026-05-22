@@ -71,8 +71,12 @@ export default defineConfig([
   },
 ])
 ```
-
-## Deployment
+## Firebase Deployment
+```bash
+npm run build
+firebase deploy
+```
+## Docker Deployment
 
 ```bash
 docker compose up --build
