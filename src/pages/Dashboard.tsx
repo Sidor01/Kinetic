@@ -22,7 +22,7 @@ interface User {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(() => {
+  const [user, _setUser] = useState<User | null>(() => {
     const userStr = localStorage.getItem('kinetic_currentUser');
     if (!userStr) return null;
     return JSON.parse(userStr);
@@ -40,7 +40,7 @@ export default function Dashboard() {
     const saved = localStorage.getItem('kinetic_weight');
     return saved ? JSON.parse(saved) : false;
   });
-  const [stats, setStats] = useState(() => {
+  const [stats, _setStats] = useState(() => {
     const saved = localStorage.getItem('kinetic_stats');
     return saved ? JSON.parse(saved) : {
       dayStreak: 15,
@@ -61,12 +61,6 @@ export default function Dashboard() {
     navigate('/login', { replace: true });
     return null;
   }
-
-  const handleLogout = () => {
-    localStorage.removeItem('kinetic_currentUser');
-    setUser(null);
-    navigate('/login');
-  };
 
   const completedTasksCount = hydrationProgress + (meditationDone ? 1 : 0) + (weightDone ? 1 : 0);
   const totalTasksCount = 5;
