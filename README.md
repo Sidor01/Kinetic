@@ -71,3 +71,9 @@ export default defineConfig([
   },
 ])
 ```
+
+## Deployment
+
+```bash
+docker compose up --build
+```
