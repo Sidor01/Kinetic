@@ -49,12 +49,12 @@ export default function HabitList() {
   const [selectedArchetype, setSelectedArchetype] = useState('Health');
 
   const allSuggestions = [
-    { name: "Morning Meditation", category: "Mindfulness" },
-    { name: "Read 20 Pages", category: "Learning" },
+    { name: "Morning Run", category: "Health" },
+    { name: "Read 10 Pages", category: "Learning" },
     { name: "Hydrate (2L)", category: "Health" },
     { name: "Evening Reflection", category: "Mindfulness" },
-    { name: "6am Cold Plunge", category: "Health" },
-    { name: "Algorithm Study", category: "Learning" },
+    { name: "Morning Run", category: "Health" },
+    { name: "Read 10 Pages", category: "Learning" },
     { name: "Deep Work", category: "Productivity" },
     { name: "Mindful Breathing", category: "Mindfulness" },
     { name: "Stretch / Yoga", category: "Health" }
@@ -69,11 +69,9 @@ export default function HabitList() {
     <div className="dashboard-container">
       <AppSidebar />
 
-      {/* Main Content */}
       <div className="dashboard-main">
         <AppHeader />
 
-        {/* Habit List specific content */}
         <div className="hl-header">
           <h1>The Ritual <span className="purple">Stack</span></h1>
           <div className="hl-header-row">
@@ -109,12 +107,12 @@ export default function HabitList() {
 
         <div className="hl-grid">
 
-          {/* Card 1: 6am Cold Plunge (Large) - High Priority */}
+          {/* Card 1: Morning Run (Large) - High Priority */}
           {(activeTab === 'All Habits' || activeTab === 'Health') && (priorityFilter === 'All' || priorityFilter === 'High') && (
             <div className="hl-card large">
               <span className="hl-card-tag tag-health">HEALTH</span>
               <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                6am Cold Plunge
+                Morning Run
               </h3>
 
               <div className="hl-progress-circle-wrap">
@@ -146,12 +144,12 @@ export default function HabitList() {
             </div>
           )}
 
-          {/* Card 2: Algorithm Study - Medium Priority */}
+          {/* Card 2: Read 10 Pages - Medium Priority */}
           {(activeTab === 'All Habits' || activeTab === 'Learning') && (priorityFilter === 'All' || priorityFilter === 'Medium') && (
             <div className="hl-card" style={{ cursor: 'pointer' }} onClick={() => navigate('/habits/algorithm-study')}>
               <span className="hl-card-tag tag-learning">LEARNING</span>
-              <h3>Algorithm Study</h3>
-              <p>Mastering dynamic programming structures.</p>
+              <h3>Read 10 Pages</h3>
+              <p>Build knowledge through consistent daily reading.</p>
 
               <div className="hl-small-meta">
                 <div className="hl-meta-row">
@@ -160,7 +158,7 @@ export default function HabitList() {
                 </div>
                 <div className="hl-meta-row">
                   <span>FREQUENCY</span>
-                  <span style={{ color: '#ffffff', fontWeight: 600 }}>3x Week</span>
+                  <span style={{ color: '#ffffff', fontWeight: 600 }}>Daily</span>
                 </div>
               </div>
 
@@ -174,7 +172,7 @@ export default function HabitList() {
             </div>
           )}
 
-          {/* Card 3: Deep Work - High Priority */}
+          {/* Card 3: Code 1h - High Priority */}
           {(activeTab === 'All Habits' || activeTab === 'Productivity') && (priorityFilter === 'All' || priorityFilter === 'High') && (
             <div className="hl-card">
               <span className="hl-card-tag tag-productivity">PRODUCTIVITY</span>
@@ -182,8 +180,8 @@ export default function HabitList() {
                 <Check size={16} color="#18181b" strokeWidth={3} />
               </div>
 
-              <h3>Deep Work</h3>
-              <p>90 minutes of focused output.</p>
+              <h3>Code 1h</h3>
+              <p>One hour of deep focused coding.</p>
 
               <div className="hl-status-box">
                 <div>
@@ -195,11 +193,11 @@ export default function HabitList() {
             </div>
           )}
 
-          {/* Card 4: Daily Meditation - Low Priority */}
+          {/* Card 4: Meditation - Low Priority */}
           {(activeTab === 'All Habits' || activeTab === 'Mindfulness') && (priorityFilter === 'All' || priorityFilter === 'Low') && (
             <div className="hl-card hl-card-glow" style={{ cursor: 'pointer' }} onClick={() => navigate('/habits/daily-meditation')}>
               <span className="hl-card-tag tag-mindfulness">MINDFULNESS</span>
-              <h3>Daily Meditation</h3>
+              <h3>Meditation</h3>
               <p>Mindfulness and mental clarity session.</p>
 
               <div className="hl-progress-line-wrap">
@@ -209,17 +207,17 @@ export default function HabitList() {
             </div>
           )}
 
-          {/* Card 5: Hydration Goal - Low Priority */}
+          {/* Card 5: No Sugar - Low Priority */}
           {(activeTab === 'All Habits' || activeTab === 'Health') && (priorityFilter === 'All' || priorityFilter === 'Low') && (
             <div className="hl-card" style={{ display: 'flex', justifyContent: 'center' }}>
               <div className="hl-center-content">
                 <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                   <div className="hl-icon-circle">
-                    <Droplet size={24} />
+                    <Heart size={24} />
                   </div>
                   <div className="hl-center-text">
-                    <h3 style={{ fontSize: '18px', margin: '0 0 4px 0' }}>Hydration Goal</h3>
-                    <p style={{ margin: 0 }}>3.5L Intake</p>
+                    <h3 style={{ fontSize: '18px', margin: '0 0 4px 0' }}>No Sugar</h3>
+                    <p style={{ margin: 0 }}>Zero Sugar Intake</p>
                   </div>
                 </div>
                 <button
