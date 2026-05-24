@@ -4,6 +4,8 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import HabitList from './pages/HabitList';
+import Statistics from './pages/Statistics';
+import Rewards from './pages/Rewards';
 import DailyMeditationDetail from './pages/DailyMeditationDetail';
 import AlgorithmStudyDetail from './pages/AlgorithmStudyDetail';
 import Placeholder from './pages/Placeholder';
@@ -26,8 +28,8 @@ function AppRoutes() {
       <Route path="/habits" element={<ProtectedRoute><HabitList /></ProtectedRoute>} />
       <Route path="/habits/daily-meditation" element={<ProtectedRoute><DailyMeditationDetail /></ProtectedRoute>} />
       <Route path="/habits/algorithm-study" element={<ProtectedRoute><AlgorithmStudyDetail /></ProtectedRoute>} />
-      <Route path="/statistics" element={<ProtectedRoute><Placeholder title="Statistics" /></ProtectedRoute>} />
-      <Route path="/rewards" element={<ProtectedRoute><Placeholder title="Rewards" /></ProtectedRoute>} />
+      <Route path="/statistics" element={<ProtectedRoute><Statistics /></ProtectedRoute>} />
+      <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

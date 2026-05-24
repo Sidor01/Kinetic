@@ -9,7 +9,10 @@ import {
   Star,
   Flame,
   Lock,
-  Activity
+  Activity,
+  BookOpen,
+  Heart,
+  Zap
 } from 'lucide-react';
 import AppSidebar from '../components/AppSidebar';
 import AppHeader from '../components/AppHeader';
@@ -30,6 +33,14 @@ export default function Dashboard() {
     const saved = localStorage.getItem('kinetic_weight');
     return saved ? JSON.parse(saved) : false;
   });
+  const [readDone, setReadDone] = useState(() => {
+    const saved = localStorage.getItem('kinetic_read');
+    return saved ? JSON.parse(saved) : false;
+  });
+  const [noSugarDone, setNoSugarDone] = useState(() => {
+    const saved = localStorage.getItem('kinetic_nosugar');
+    return saved ? JSON.parse(saved) : false;
+  });
   const [stats] = useState(() => {
     const saved = localStorage.getItem('kinetic_stats');
     return saved ? JSON.parse(saved) : {
@@ -44,22 +55,27 @@ export default function Dashboard() {
     localStorage.setItem('kinetic_hydration', hydrationProgress.toString());
     localStorage.setItem('kinetic_meditation', JSON.stringify(meditationDone));
     localStorage.setItem('kinetic_weight', JSON.stringify(weightDone));
+    localStorage.setItem('kinetic_read', JSON.stringify(readDone));
+    localStorage.setItem('kinetic_nosugar', JSON.stringify(noSugarDone));
     localStorage.setItem('kinetic_stats', JSON.stringify(stats));
-  }, [hydrationProgress, meditationDone, weightDone, stats]);
+  }, [hydrationProgress, meditationDone, weightDone, readDone, noSugarDone, stats]);
 
 
-  const completedTasksCount = hydrationProgress + (meditationDone ? 1 : 0) + (weightDone ? 1 : 0);
+  const completedTasksCount = hydrationProgress + (meditationDone ? 1 : 0) + 
+(weightDone ? 1 : 0) + (readDone ? 1 : 0) + (noSugarDone ? 1 : 0);
   const totalTasksCount = 5;
-  const orbitPercentage = Math.round((completedTasksCount / totalTasksCount) * 100);
+  const orbitPercentage = Math.round((completedTasksCount / totalTasksCount) * 
+100);
 
-  const earnedXP = (hydrationProgress * 28) + (meditationDone ? 28 : 0) + (weightDone ? 28 : 0);
+  const earnedXP = (hydrationProgress * 28) + (meditationDone ? 28 : 0) + 
+(weightDone ? 28 : 0) + (readDone ? 28 : 0) + (noSugarDone ? 28 : 0);
   const baseXP = 310;
   const currentXP = baseXP + earnedXP;
   const milestoneMax = 500;
-  const milestoneProgressPercentage = Math.min(100, Math.round((currentXP / milestoneMax) * 100));
+  const milestoneProgressPercentage = Math.min(100, Math.round((currentXP / 
+milestoneMax) * 100));
 
   const toggleHydration = (index: number) => {
-    // Click on circle: if clicking the current progress level, decrease it; otherwise set to index + 1
     if (hydrationProgress === index + 1) {
       setHydrationProgress(index);
     } else {
@@ -78,8 +94,9 @@ export default function Dashboard() {
         {/* Hero */}
         <div className="hero-section">
           <div className="hero-content">
-            <h1>Hello, {user?.displayName || 'Architect'}.</h1>
-            <p>Your momentum is your legacy. You've completed {orbitPercentage}% of your targets this week.</p>
+            <h1 style={{ color: '#ffffff' }}>Hello, {user?.displayName || 'Architect'}.</h1>
+            <p>Your momentum is your legacy. You've completed {orbitPercentage}%
+ of your targets this week.</p>
           </div>
           <div className="hero-stats">
             <div className="stat-card">
@@ -95,30 +112,35 @@ export default function Dashboard() {
 
         <div className="grid-layout">
           {/* Left Column */}
-          <div className="column-left" style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+          <div className="column-left" style={{ display: 'flex', flexDirection: 
+'column', gap: '48px' }}>
 
             {/* Today's Pulse */}
             <div className="section">
               <div className="section-header">
                 <h2 className="section-title">Today's Pulse</h2>
-                <Link to="/habits" className="section-link">View Schedule &rarr;</Link>
+                <Link to="/habits" className="section-link">View Schedule 
+&rarr;</Link>
               </div>
               <div className="task-list">
 
                 <div className="task-card">
                   <div className="task-icon blue">
-                    <Droplet size={24} />
+                    <Activity size={24} />
                   </div>
                   <div className="task-details">
-                    <h3 className="task-name">Deep Hydration</h3>
-                    <div className="task-meta">Target: 3.5 Liters • <span className={hydrationProgress === 3 ? "green" : "blue"}>{hydrationProgress === 3 ? 'Completed' : 'Progressing'}</span></div>
+                    <h3 className="task-name">Morning Run</h3>
+                    <div className="task-meta">Target: 5km • <span 
+className={hydrationProgress === 3 ? "green" : "blue"}>{hydrationProgress === 3 
+? 'Completed' : 'Progressing'}</span></div>
                   </div>
                   <div className="task-progress">
                     {[0, 1, 2].map(index => (
                       <div
                         key={index}
                         onClick={() => toggleHydration(index)}
-                        className={`progress-circle ${hydrationProgress > index ? 'active' : ''}`}
+                        className={`progress-circle ${hydrationProgress > index 
+? 'active' : ''}`}
                         style={{ cursor: 'pointer' }}
                       >
                         {hydrationProgress > index && <Check size={14} />}
@@ -129,16 +151,19 @@ export default function Dashboard() {
 
                 <div className="task-card">
                   <div className="task-icon purple">
-                    <Activity size={24} />
+                    <Sparkles size={24} />
                   </div>
                   <div className="task-details">
-                    <h3 className="task-name">Morning Meditation</h3>
-                    <div className="task-meta">Target: 20 Minutes • <span className={meditationDone ? "green" : ""}>{meditationDone ? 'Completed' : 'Upcoming'}</span></div>
+                    <h3 className="task-name">Meditation</h3>
+                    <div className="task-meta">Target: 20 Minutes • <span 
+className={meditationDone ? "green" : ""}>{meditationDone ? 'Completed' : 
+'Upcoming'}</span></div>
                   </div>
                   <div className="task-progress">
                     <div
                       onClick={() => setMeditationDone(!meditationDone)}
-                      className={`progress-circle ${meditationDone ? 'completed' : ''}`}
+                      className={`progress-circle ${meditationDone ? 'completed'
+ : ''}`}
                       style={{ cursor: 'pointer' }}
                     >
                       {meditationDone && <Check size={16} />}
@@ -148,19 +173,60 @@ export default function Dashboard() {
 
                 <div className="task-card">
                   <div className="task-icon red">
-                    <Dumbbell size={24} />
+                    <Zap size={24} />
                   </div>
                   <div className="task-details">
-                    <h3 className="task-name">Weight Training</h3>
-                    <div className="task-meta">Target: Upper Body • <span className={weightDone ? "green" : ""}>{weightDone ? 'Completed' : 'Upcoming'}</span></div>
+                    <h3 className="task-name">Code 1h</h3>
+                    <div className="task-meta">Target: Deep Work • <span 
+className={weightDone ? "green" : ""}>{weightDone ? 'Completed' : 
+'Upcoming'}</span></div>
                   </div>
                   <div className="task-progress">
                     <div
                       onClick={() => setWeightDone(!weightDone)}
-                      className={`progress-circle ${weightDone ? 'completed' : ''}`}
+                      className={`progress-circle ${weightDone ? 'completed' : 
+''}`}
                       style={{ cursor: 'pointer' }}
                     >
                       {weightDone && <Check size={16} />}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="task-card">
+                  <div className="task-icon" style={{ background: 'linear-gradient(135deg, #3b82f6, #a855f7)' }}>
+                    <BookOpen size={24} />
+                  </div>
+                  <div className="task-details">
+                    <h3 className="task-name">Read 10 Pages</h3>
+                    <div className="task-meta">Target: Daily Reading • <span className={readDone ? "green" : ""}>{readDone ? 'Completed' : 'Upcoming'}</span></div>
+                  </div>
+                  <div className="task-progress">
+                    <div
+                      onClick={() => setReadDone(!readDone)}
+                      className={`progress-circle ${readDone ? 'completed' : ''}`}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {readDone && <Check size={16} />}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="task-card">
+                  <div className="task-icon" style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)' }}>
+                    <Heart size={24} />
+                  </div>
+                  <div className="task-details">
+                    <h3 className="task-name">No Sugar</h3>
+                    <div className="task-meta">Target: Zero Sugar • <span className={noSugarDone ? "green" : ""}>{noSugarDone ? 'Completed' : 'Upcoming'}</span></div>
+                  </div>
+                  <div className="task-progress">
+                    <div
+                      onClick={() => setNoSugarDone(!noSugarDone)}
+                      className={`progress-circle ${noSugarDone ? 'completed' : ''}`}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {noSugarDone && <Check size={16} />}
                     </div>
                   </div>
                 </div>
@@ -195,7 +261,8 @@ export default function Dashboard() {
                   <div className="potential-icon locked">
                     <Lock size={32} />
                   </div>
-                  <h3 className="potential-title potential-locked">Zen Voyager</h3>
+                  <h3 className="potential-title potential-locked">Zen 
+Voyager</h3>
                   <div className="potential-desc">REACH LEVEL 30</div>
                 </div>
 
@@ -203,7 +270,8 @@ export default function Dashboard() {
                   <div className="potential-icon locked">
                     <Lock size={32} />
                   </div>
-                  <h3 className="potential-title potential-locked">Iron Will</h3>
+                  <h3 className="potential-title potential-locked">Iron 
+Will</h3>
                   <div className="potential-desc">30 DAY WEIGHT LOG</div>
                 </div>
 
@@ -213,14 +281,17 @@ export default function Dashboard() {
           </div>
 
           {/* Right Column */}
-          <div className="column-right" style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          <div className="column-right" style={{ display: 'flex', flexDirection:
+ 'column', gap: '32px' }}>
 
             {/* Daily Orbit */}
             <div className="orbit-card">
-              <h2 className="section-title" style={{ marginBottom: 0 }}>Daily Orbit</h2>
+              <h2 className="section-title" style={{ marginBottom: 0 }}>Daily 
+Orbit</h2>
               <div
                 className="orbit-circle"
-                style={{ background: `conic-gradient(#38bdf8 0%, #a855f7 ${orbitPercentage}%, #27272a ${orbitPercentage}%)` }}
+                style={{ background: `conic-gradient(#38bdf8 0%, #a855f7 
+${orbitPercentage}%, #27272a ${orbitPercentage}%)` }}
               >
                 <div className="orbit-inner">
                   <div className="orbit-value">{orbitPercentage}%</div>
@@ -234,7 +305,8 @@ export default function Dashboard() {
                 </div>
                 <div className="orbit-stat">
                   <div className="orbit-stat-label">Energy</div>
-                  <div className="orbit-stat-value purple">{stats.energyLevel}</div>
+                  <div className="orbit-stat-value 
+purple">{stats.energyLevel}</div>
                 </div>
               </div>
             </div>
@@ -243,7 +315,8 @@ export default function Dashboard() {
             <div className="quote-card">
               <div className="quote-marks">"</div>
               <p className="quote-text">
-                "Excellence is not an act, but a habit. We are what we repeatedly do."
+                "Excellence is not an act, but a habit. We are what we 
+repeatedly do."
               </p>
               <div className="quote-author">— Aristotle</div>
             </div>
@@ -266,7 +339,8 @@ export default function Dashboard() {
                   <div className="progress-bar">
                     <div
                       className="progress-fill"
-                      style={{ width: `${milestoneProgressPercentage}%`, transition: 'width 0.3s ease-out' }}
+                      style={{ width: `${milestoneProgressPercentage}%`, 
+transition: 'width 0.3s ease-out' }}
                     ></div>
                   </div>
                 </div>
