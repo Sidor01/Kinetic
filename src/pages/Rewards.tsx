@@ -1,19 +1,22 @@
 import { useState, useEffect } from 'react';
+import type { LucideIcon } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import AppSidebar from '../components/AppSidebar';
 import AppHeader from '../components/AppHeader';
+import { createNotification } from '../utils/notifications';
 import './Dashboard.css';
 import { 
   Sun, Sword, Sparkles, BookOpen, Zap, ArrowRight, UserPlus, 
   Gamepad2, Coffee, Crown, ChevronLeft, ChevronRight, X, 
   Trophy, Flame, Star, Target, Heart, CheckCircle, Plus,
   Lock, Gift, RotateCcw, TrendingUp, Crown as CrownIcon,
-  Cloud, Palette, BarChart3, Check
+  Palette, Check
 } from 'lucide-react';
 
 // ==================== DANE ====================
 
 type Badge = {
-  icon: any; name: string; desc: string; color: string; earned: boolean; requirement: string;
+  icon: LucideIcon; name: string; desc: string; color: string; earned: boolean; requirement: string;
 };
 
 const ALL_BADGES: Badge[] = [
@@ -30,7 +33,7 @@ const ALL_BADGES: Badge[] = [
 
 type RewardItem = {
   key: string; title: string; desc: string; cost: number; tag: string; tagColor: string;
-  bg: string; icon: any; iconColor: string; type: 'redeem' | 'premium';
+  bg: string; icon: LucideIcon; iconColor: string; type: 'redeem' | 'premium';
 };
 
 const REWARD_PAGES: RewardItem[][] = [
@@ -56,9 +59,32 @@ const REWARD_PAGES: RewardItem[][] = [
 
 type Notif = { msg: string; ok: boolean } | null;
 
+function generateCode(key: string) {
+  const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+  if (key === 'gaming') return `GAME-${rand}-3H`;
+  if (key === 'coffee') return `BREW-${rand}-ART`;
+  if (key === 'movie') return `CINE-${rand}-2D`;
+  if (key === 'dayoff') return `OFF-${rand}-SUN`;
+  if (key === 'theme') return `THM-${rand}-NEO`;
+  return `RWD-${rand}`;
+}
+
+function ModalCard({ children, onClose, wide = false }: { children: React.ReactNode; onClose: () => void; wide?: boolean }) {
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }} onClick={onClose}>
+      <div style={{ background: '#18181b', borderRadius: '20px', padding: '32px', maxWidth: wide ? '640px' : '520px', width: '100%', maxHeight: '85vh', overflowY: 'auto', position: 'relative', border: '1px solid #27272a' }} onClick={e => e.stopPropagation()}>
+        <button onClick={onClose} style={{ position: 'absolute', top: '16px', right: '16px', background: 'transparent', border: 'none', color: '#a1a1aa', cursor: 'pointer', padding: '4px' }}><X size={22} /></button>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 // ==================== KOMPONENT ====================
 
 export default function Rewards() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // --- GLOBALNE PUNKTY (współdzielone z resztą appki przez localStorage) ---
   const [userPoints, setUserPoints] = useState(() => {
     const saved = localStorage.getItem('kinetic_user_points');
@@ -109,7 +135,18 @@ export default function Rewards() {
       if (existing) setRewardDetail({ key, title, code: existing.code, desc: getRewardDesc(key) });
       return;
     }
-    if (userPoints < cost) { setNotif({ msg: `Not enough points! Need ${cost - userPoints} PTS more.`, ok: false }); return; }
+    if (userPoints < cost) {
+      setNotif({ msg: `Not enough points! Need ${cost - userPoints} PTS more.`, ok: false });
+      createNotification({
+        title: 'More Points Needed',
+        message: `${title} needs ${cost - userPoints} more PTS before it can be claimed.`,
+        tone: 'risk',
+        icon: 'flame',
+        actionLabel: 'View Rewards',
+        actionPath: '/rewards',
+      });
+      return;
+    }
 
     setUserPoints(p => p - cost);
     setRedeemed(r => [...r, key]);
@@ -118,6 +155,14 @@ export default function Rewards() {
     setClaimedRewards(c => [...c, entry]);
     setNotif({ msg: `Claimed: ${title}! View your reward code.`, ok: true });
     setRewardDetail({ key, title, code, desc: getRewardDesc(key) });
+    createNotification({
+      title: 'Reward Claimed',
+      message: `${title} was unlocked for ${cost.toLocaleString()} PTS.`,
+      tone: 'success',
+      icon: 'gift',
+      actionLabel: 'View Reward',
+      actionPath: `/rewards?reward=${encodeURIComponent(key)}`,
+    });
   };
 
   const getRewardDesc = (key: string) => {
@@ -127,16 +172,6 @@ export default function Rewards() {
     if (key === 'dayoff') return 'Activate this pass from your Habit List to freeze all habits for one Sunday without losing streak.';
     if (key === 'theme') return 'Theme will be automatically applied to your Dashboard after claiming. You can switch it in Settings.';
     return 'Your reward is ready! Code is valid and stored in your account.';
-  };
-
-  const generateCode = (key: string) => {
-    const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
-    if (key === 'gaming') return `GAME-${rand}-3H`;
-    if (key === 'coffee') return `BREW-${rand}-ART`;
-    if (key === 'movie') return `CINE-${rand}-2D`;
-    if (key === 'dayoff') return `OFF-${rand}-SUN`;
-    if (key === 'theme') return `THM-${rand}-NEO`;
-    return `RWD-${rand}`;
   };
 
   const resetProgress = () => {
@@ -152,6 +187,14 @@ export default function Rewards() {
   const simulateEarn = () => {
     setUserPoints(p => p + 100);
     setNotif({ msg: '+100 PTS earned! (Simulated from habit completion)', ok: true });
+    createNotification({
+      title: '100 Points Earned',
+      message: 'Habit completion added 100 PTS to your reward balance.',
+      tone: 'success',
+      icon: 'trophy',
+      actionLabel: 'Open Rewards',
+      actionPath: '/rewards',
+    });
   };
 
   const sendChallenge = () => {
@@ -160,17 +203,54 @@ export default function Rewards() {
     setChallenges(c => [...c, entry]);
     setFriendName('');
     setNotif({ msg: `Challenge sent to ${entry.name}!`, ok: true });
+    createNotification({
+      title: 'Challenge Sent',
+      message: `${entry.name} received your habit challenge. The duel is now pending.`,
+      tone: 'info',
+      icon: 'user',
+      actionLabel: 'View Rewards',
+      actionPath: '/rewards',
+    });
   };
 
-  // UI Helpers
-  const ModalCard = ({ children, onClose, wide = false }: { children: React.ReactNode; onClose: () => void; wide?: boolean }) => (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }} onClick={onClose}>
-      <div style={{ background: '#18181b', borderRadius: '20px', padding: '32px', maxWidth: wide ? '640px' : '520px', width: '100%', maxHeight: '85vh', overflowY: 'auto', position: 'relative', border: '1px solid #27272a' }} onClick={e => e.stopPropagation()}>
-        <button onClick={onClose} style={{ position: 'absolute', top: '16px', right: '16px', background: 'transparent', border: 'none', color: '#a1a1aa', cursor: 'pointer', padding: '4px' }}><X size={22} /></button>
-        {children}
-      </div>
-    </div>
-  );
+  const selectPlan = (plan: string) => {
+    setNotif({ msg: `${plan} plan selected! (Demo)`, ok: true });
+    setShowProPlans(false);
+    createNotification({
+      title: 'Kinetic Pro Selected',
+      message: `${plan} plan was selected. Your demo upgrade is ready.`,
+      tone: 'success',
+      icon: 'trophy',
+      actionLabel: 'View Rewards',
+      actionPath: '/rewards',
+    });
+  };
+
+  const linkedRewardKey = searchParams.get('reward');
+  const linkedClaim = linkedRewardKey === 'latest'
+    ? claimedRewards.at(-1)
+    : claimedRewards.find(reward => reward.key === linkedRewardKey);
+  const linkedReward = linkedClaim
+    ? REWARD_PAGES.flat().find(reward => reward.key === linkedClaim.key)
+    : undefined;
+  const linkedRewardDetail = linkedClaim && linkedReward
+    ? {
+        key: linkedClaim.key,
+        title: linkedReward.title,
+        code: linkedClaim.code,
+        desc: getRewardDesc(linkedClaim.key),
+      }
+    : null;
+  const visibleRewardDetail = rewardDetail ?? linkedRewardDetail;
+
+  const closeRewardDetail = () => {
+    setRewardDetail(null);
+    if (searchParams.has('reward')) {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete('reward');
+      setSearchParams(nextParams, { replace: true });
+    }
+  };
 
   const pageRewards = REWARD_PAGES[currentPage];
 
@@ -178,7 +258,7 @@ export default function Rewards() {
     <div className="dashboard-container">
       <AppSidebar />
       <div className="dashboard-main">
-        <AppHeader />
+        <AppHeader points={userPoints} />
         <div style={{ padding: '32px', overflowY: 'auto', position: 'relative' }}>
 
           {/* Toast */}
@@ -407,21 +487,21 @@ export default function Rewards() {
       )}
 
       {/* ========== MODAL: Reward Code ========== */}
-      {rewardDetail && (
-        <ModalCard onClose={() => setRewardDetail(null)}>
+      {visibleRewardDetail && (
+        <ModalCard onClose={closeRewardDetail}>
           <div style={{ textAlign: 'center', marginBottom: '20px' }}>
             <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'linear-gradient(135deg, #a855f7, #7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
               <Gift size={28} color="#fff" />
             </div>
-            <h2 style={{ margin: '0 0 4px 0', fontSize: '20px' }}>{rewardDetail.title}</h2>
+            <h2 style={{ margin: '0 0 4px 0', fontSize: '20px' }}>{visibleRewardDetail.title}</h2>
             <p style={{ margin: 0, fontSize: '13px', color: '#a1a1aa' }}>Claimed on {new Date().toLocaleDateString()}</p>
           </div>
           <div style={{ background: '#27272a', borderRadius: '12px', padding: '20px', marginBottom: '20px', textAlign: 'center' }}>
             <p style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#a1a1aa', textTransform: 'uppercase', letterSpacing: '1px' }}>Your Reward Code</p>
-            <p style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: '#a855f7', letterSpacing: '2px', fontFamily: 'monospace' }}>{rewardDetail.code}</p>
+            <p style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: '#a855f7', letterSpacing: '2px', fontFamily: 'monospace' }}>{visibleRewardDetail.code}</p>
           </div>
-          <p style={{ margin: '0 0 20px 0', fontSize: '14px', color: '#d4d4d8', lineHeight: '1.5', textAlign: 'center' }}>{rewardDetail.desc}</p>
-          <button onClick={() => setRewardDetail(null)} style={{ width: '100%', padding: '12px', background: '#a855f7', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: 600 }}>Got it!</button>
+          <p style={{ margin: '0 0 20px 0', fontSize: '14px', color: '#d4d4d8', lineHeight: '1.5', textAlign: 'center' }}>{visibleRewardDetail.desc}</p>
+          <button onClick={closeRewardDetail} style={{ width: '100%', padding: '12px', background: '#a855f7', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: 600 }}>Got it!</button>
         </ModalCard>
       )}
 
@@ -446,7 +526,7 @@ export default function Rewards() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}><Check size={14} color="#22c55e" /> Cloud Sync</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}><Check size={14} color="#22c55e" /> 3 Custom Themes</div>
               </div>
-              <button onClick={() => { setNotif({ msg: 'Monthly plan selected! (Demo)', ok: true }); setShowProPlans(false); }} style={{ width: '100%', padding: '10px', background: 'transparent', border: '1px solid #3f3f46', color: '#fff', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Choose Monthly</button>
+              <button onClick={() => selectPlan('Monthly')} style={{ width: '100%', padding: '10px', background: 'transparent', border: '1px solid #3f3f46', color: '#fff', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Choose Monthly</button>
             </div>
 
             {/* Yearly */}
@@ -460,7 +540,7 @@ export default function Rewards() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}><Check size={14} color="#22c55e" /> Priority Support</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', fontWeight: 600, color: '#a855f7' }}>Save 33%</div>
               </div>
-              <button onClick={() => { setNotif({ msg: 'Yearly plan selected! (Demo)', ok: true }); setShowProPlans(false); }} style={{ width: '100%', padding: '10px', background: '#a855f7', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Choose Yearly</button>
+              <button onClick={() => selectPlan('Yearly')} style={{ width: '100%', padding: '10px', background: '#a855f7', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Choose Yearly</button>
             </div>
 
             {/* Lifetime */}
@@ -473,7 +553,7 @@ export default function Rewards() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}><Check size={14} color="#22c55e" /> Beta Access</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', fontWeight: 600, color: '#eab308' }}>Pay once, keep forever</div>
               </div>
-              <button onClick={() => { setNotif({ msg: 'Lifetime plan selected! (Demo)', ok: true }); setShowProPlans(false); }} style={{ width: '100%', padding: '10px', background: 'transparent', border: '1px solid #eab308', color: '#eab308', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Choose Lifetime</button>
+              <button onClick={() => selectPlan('Lifetime')} style={{ width: '100%', padding: '10px', background: 'transparent', border: '1px solid #eab308', color: '#eab308', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Choose Lifetime</button>
             </div>
           </div>
 

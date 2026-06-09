@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import AppHeader from '../components/AppHeader';
+import { createNotification } from '../utils/notifications';
 import {
   LayoutDashboard,
   CheckSquare,
@@ -8,7 +10,6 @@ import {
   Trophy,
   Settings as SettingsIcon,
   Bell,
-  Zap,
   Shield,
   Download,
   Pen,
@@ -74,14 +75,7 @@ export default function Settings() {
 
       {/* Main Content */}
       <div className="dashboard-main">
-        {/* Header */}
-        <div className="header-top">
-          <Bell size={24} color="#a1a1aa" />
-          <div className="pts-badge">
-            <Zap size={16} fill="currentColor" />
-            1,250 PTS
-          </div>
-        </div>
+        <AppHeader />
 
         <div className="settings-content">
           <h1 style={{ fontSize: '48px', fontWeight: 700, margin: '0 0 48px 0', letterSpacing: '-1px' }}>Configuration</h1>
@@ -183,7 +177,15 @@ export default function Settings() {
                 as a CSV or JSON payload.
               </p>
 
-              <button style={{ backgroundColor: '#27272a', color: '#d8b4fe', border: 'none', padding: '14px', borderRadius: '16px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', marginTop: 'auto', transition: 'background-color 0.2s' }}>
+              <button
+                onClick={() => createNotification({
+                  title: 'Data Export Requested',
+                  message: 'Your habit history export is being prepared and will be ready shortly.',
+                  tone: 'info',
+                  icon: 'refresh',
+                })}
+                style={{ backgroundColor: '#27272a', color: '#d8b4fe', border: 'none', padding: '14px', borderRadius: '16px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', marginTop: 'auto', transition: 'background-color 0.2s' }}
+              >
                 <Download size={16} />
                 Request Export
               </button>

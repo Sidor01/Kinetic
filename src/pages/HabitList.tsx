@@ -4,11 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import LogImmersionModal from '../components/LogImmersionModal';
 import AppSidebar from '../components/AppSidebar';
 import AppHeader from '../components/AppHeader';
+import { createNotification } from '../utils/notifications';
 import {
   ArrowUpDown,
   CheckCircle2,
   Check,
-  Droplet,
   Plus,
   ChevronDown,
   X,
@@ -43,6 +43,20 @@ export default function HabitList() {
     if (habitId === 'plunge') setPlungeDone(true);
     if (habitId === 'study') setStudyDone(true);
     if (habitId === 'hydration') setHydrationDone(true);
+    const habitNames: Record<string, string> = {
+      plunge: 'Morning Run',
+      study: 'Read 10 Pages',
+      hydration: 'No Sugar',
+    };
+    const habitName = habitNames[habitId] ?? 'Ritual';
+    createNotification({
+      title: `${habitName} Sealed`,
+      message: `${data.duration} minutes logged at ${data.intensity.toLowerCase()} intensity.`,
+      tone: 'success',
+      icon: habitId === 'study' ? 'book' : 'check',
+      actionLabel: 'View Habits',
+      actionPath: '/habits',
+    });
     closeLogModal();
   };
   const [ritualInput, setRitualInput] = useState('');
@@ -305,6 +319,16 @@ export default function HabitList() {
               <button
                 className="hl-submit-btn"
                 onClick={() => {
+                  const ritualName = ritualInput.trim();
+                  if (!ritualName) return;
+                  createNotification({
+                    title: 'New Ritual Created',
+                    message: `${ritualName} was added to your ${selectedArchetype.toLowerCase()} stack.`,
+                    tone: 'info',
+                    icon: 'zap',
+                    actionLabel: 'View Habits',
+                    actionPath: '/habits',
+                  });
                   setRitualInput('');
                   setSelectedArchetype('Health');
                   setIsModalOpen(false);

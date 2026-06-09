@@ -11,6 +11,7 @@ import TrendsChart from '../components/TrendsChart';
 import JournalCard from '../components/JournalCard';
 import type { Note } from '../components/JournalCard';
 import AchievementCard from '../components/AchievementCard';
+import { createNotification } from '../utils/notifications';
 import './Dashboard.css';
 import './HabitDetail.css';
 
@@ -131,6 +132,14 @@ export default function DailyMeditationDetail() {
                     onSeal={(data) => {
                         setIsCompleted(true);
                         setShowImmersionModal(false);
+                        createNotification({
+                            title: 'Meditation Completed',
+                            message: `${data.duration} minutes of meditation sealed at ${data.intensity.toLowerCase()} intensity.`,
+                            tone: 'success',
+                            icon: 'check',
+                            actionLabel: 'View Habits',
+                            actionPath: '/habits',
+                        });
                         if (data.notes.trim()) {
                             setNotes([{ id: Date.now(), date: 'Just now', text: data.notes }, ...notes]);
                         }

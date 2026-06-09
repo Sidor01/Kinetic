@@ -8,7 +8,6 @@ import Statistics from './pages/Statistics';
 import Rewards from './pages/Rewards';
 import DailyMeditationDetail from './pages/DailyMeditationDetail';
 import AlgorithmStudyDetail from './pages/AlgorithmStudyDetail';
-import Placeholder from './pages/Placeholder';
 import Settings from './pages/Settings';
 import './App.css';
 
