@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
-  Droplet,
   Check,
-  Dumbbell,
   Sparkles,
   Star,
   Flame,
@@ -16,6 +14,7 @@ import {
 } from 'lucide-react';
 import AppSidebar from '../components/AppSidebar';
 import AppHeader from '../components/AppHeader';
+import { createNotification } from '../utils/notifications';
 import './Dashboard.css';
 
 export default function Dashboard() {
@@ -76,10 +75,35 @@ export default function Dashboard() {
 milestoneMax) * 100));
 
   const toggleHydration = (index: number) => {
-    if (hydrationProgress === index + 1) {
-      setHydrationProgress(index);
-    } else {
-      setHydrationProgress(index + 1);
+    const nextProgress = hydrationProgress === index + 1 ? index : index + 1;
+
+    setHydrationProgress(nextProgress);
+
+    if (nextProgress === 3 && hydrationProgress !== 3) {
+      createNotification({
+        title: 'Morning Run Completed',
+        message: 'Your morning run target is complete. Momentum secured for today.',
+        tone: 'success',
+        icon: 'check',
+        actionLabel: 'View Habits',
+        actionPath: '/habits',
+      });
+    }
+  };
+
+  const toggleTask = (done: boolean, setDone: (value: boolean) => void, title: string) => {
+    const nextDone = !done;
+    setDone(nextDone);
+
+    if (nextDone) {
+      createNotification({
+        title: `${title} Completed`,
+        message: `You completed ${title}. Your daily momentum just moved forward.`,
+        tone: 'success',
+        icon: title === 'Read 10 Pages' ? 'book' : 'check',
+        actionLabel: 'View Habits',
+        actionPath: '/habits',
+      });
     }
   };
 
@@ -161,7 +185,7 @@ className={meditationDone ? "green" : ""}>{meditationDone ? 'Completed' :
                   </div>
                   <div className="task-progress">
                     <div
-                      onClick={() => setMeditationDone(!meditationDone)}
+                      onClick={() => toggleTask(meditationDone, setMeditationDone, 'Meditation')}
                       className={`progress-circle ${meditationDone ? 'completed'
  : ''}`}
                       style={{ cursor: 'pointer' }}
@@ -183,7 +207,7 @@ className={weightDone ? "green" : ""}>{weightDone ? 'Completed' :
                   </div>
                   <div className="task-progress">
                     <div
-                      onClick={() => setWeightDone(!weightDone)}
+                      onClick={() => toggleTask(weightDone, setWeightDone, 'Deep Work')}
                       className={`progress-circle ${weightDone ? 'completed' : 
 ''}`}
                       style={{ cursor: 'pointer' }}
@@ -203,7 +227,7 @@ className={weightDone ? "green" : ""}>{weightDone ? 'Completed' :
                   </div>
                   <div className="task-progress">
                     <div
-                      onClick={() => setReadDone(!readDone)}
+                      onClick={() => toggleTask(readDone, setReadDone, 'Read 10 Pages')}
                       className={`progress-circle ${readDone ? 'completed' : ''}`}
                       style={{ cursor: 'pointer' }}
                     >
@@ -222,7 +246,7 @@ className={weightDone ? "green" : ""}>{weightDone ? 'Completed' :
                   </div>
                   <div className="task-progress">
                     <div
-                      onClick={() => setNoSugarDone(!noSugarDone)}
+                      onClick={() => toggleTask(noSugarDone, setNoSugarDone, 'No Sugar')}
                       className={`progress-circle ${noSugarDone ? 'completed' : ''}`}
                       style={{ cursor: 'pointer' }}
                     >

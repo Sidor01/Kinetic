@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppSidebar from '../components/AppSidebar';
 import AppHeader from '../components/AppHeader';
@@ -6,7 +6,7 @@ import './Dashboard.css';
 import { 
   TrendingUp, TrendingDown, Flame, Target, Zap, 
   CheckCircle2, X, ArrowRight, Calendar, Info,
-  Check, Circle
+  Circle
 } from 'lucide-react';
 
 const WEEKLY_DATA = [
@@ -77,14 +77,13 @@ function StatCard({ icon: Icon, label, value, trend, color, onClick }: any) {
 
 export default function Statistics() {
   const navigate = useNavigate();
-  const [userPoints, setUserPoints] = useState(1250);
+  const [userPoints] = useState(() => {
+    const saved = localStorage.getItem('kinetic_user_points');
+    const points = saved ? Number.parseInt(saved, 10) : 1250;
+    return Number.isFinite(points) ? points : 1250;
+  });
   const [dayModal, setDayModal] = useState<{date: Date; fullDate: string; isFuture: boolean; level: number; habitsDone: number; points: number} | null>(null);
   const [completionModal, setCompletionModal] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('kinetic_user_points');
-    if (saved) setUserPoints(parseInt(saved));
-  }, []);
 
   const today = useMemo(() => new Date(2026, 4, 24), []);
 
@@ -138,7 +137,7 @@ export default function Statistics() {
     return '#7c3aed';
   };
 
-  const getDayHabits = (level: number, habitsDone: number) => {
+  const getDayHabits = (habitsDone: number) => {
     const all = ['Morning Run', 'Read 10 Pages', 'Meditation', 'No Sugar', 'Code 1h'];
     return all.map((name, i) => ({
       name,
@@ -150,7 +149,7 @@ export default function Statistics() {
     <div className="dashboard-container">
       <AppSidebar />
       <div className="dashboard-main">
-        <AppHeader />
+        <AppHeader points={userPoints} />
         <div style={{ padding: '32px', overflowY: 'auto' }}>
 
           <div style={{ marginBottom: '32px' }}>
@@ -338,7 +337,7 @@ export default function Statistics() {
           {dayModal.habitsDone > 0 && (
             <>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
-                {getDayHabits(dayModal.level, dayModal.habitsDone).map((h, i) => (
+                {getDayHabits(dayModal.habitsDone).map((h, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#27272a', borderRadius: '10px', border: h.done ? '1px solid #22c55e30' : '1px solid transparent' }}>
                     <span style={{ fontSize: '14px', color: '#e4e4e7', fontWeight: 500 }}>{h.name}</span>
                     {h.done ? (
