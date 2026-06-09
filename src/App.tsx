@@ -9,6 +9,7 @@ import Rewards from './pages/Rewards';
 import DailyMeditationDetail from './pages/DailyMeditationDetail';
 import AlgorithmStudyDetail from './pages/AlgorithmStudyDetail';
 import Settings from './pages/Settings';
+import GoogleAnalytics from './components/GoogleAnalytics';
 import './App.css';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -39,6 +40,7 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <GoogleAnalytics />
         <AppRoutes />
       </BrowserRouter>
     </AuthProvider>
