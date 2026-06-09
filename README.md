@@ -1,5 +1,3 @@
-# Kinetic
-
 ## Firebase Deployment
 ```bash
 npm run build
