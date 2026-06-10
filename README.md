@@ -11,6 +11,9 @@ Kinetic to aplikacja do budowania nawyków i śledzenia codziennej aktywności. 
 - [Routing](#routing)
 - [Przechowywanie danych](#przechowywanie-danych)
 - [Budowanie i wdrożenie](#budowanie-i-wdrożenie)
+- [Interfejs użytkownika](#interfejs-użytkownika)
+- [Hotjar](#hotjar)
+- [Google Analitycs](#google-analitycs)
 
 ## Funkcje
 
@@ -171,3 +174,72 @@ firebase deploy
 
 Konfiguracja w `firebase.json` publikuje katalog `dist` i przekierowuje wszystkie ścieżki do `index.html`.
 
+## Interfejs użytkownika
+
+### Ekran logowania i rejestracji użytkownika 
+
+![Logowanie](docs/screenshots/login.png)
+
+![Rejestracja](docs/screenshots/register.png)
+ 
+### Dashboard użytkownika  
+
+Dashboard stanowi główny ekran aplikacji, prezentujący najważniejsze informacje dotyczące aktywności użytkownika. Znajdują się na nim aktualne nawyki do wykonania, informacje o liczbie zdobytych punktów, długości aktualnej serii wykonywania nawyków oraz wskaźniki przedstawiające postępy użytkownika. 
+
+![Dashboard aplikacji Kinetic](docs/screenshots/dashboard.png)
+
+### Zarządzanie nawykami 
+
+Ekran zarządzania nawykami umożliwia przeglądanie wszystkich utworzonych nawyków oraz monitorowanie stopnia ich realizacji. Nawyki zostały podzielone na kategorie, co ułatwia ich wyszukiwanie. 
+
+![Lista nawyków w aplikacji Kinetic](docs/screenshots/habit_list.png)
+
+![Widok szczegółów nawyku w aplikacji Kinetic](docs/screenshots/habit_details.png)
+
+### Statystyki  
+
+Ekran statystyk służy do analizy postępów użytkownika w realizacji nawyków. Prezentowane są tutaj informacje dotyczące liczby aktywnych nawyków, długości serii oraz liczby zdobytych punktów. 
+
+![Statystyki aktywności uzytkownika](docs/screenshots/statistics.png)
+
+![Statystyki aktywności uzytkownika](docs/screenshots/statistics_2.png)
+
+### System nagród  
+
+Ekran nagród odpowiada za motywowanie użytkownika do regularnego wykonywania nawyków. Użytkownik może przeglądać zdobyte odznaki, aktualny poziom doświadczenia oraz swoje miejsce w rankingu. Dodatkowo może wymieniać swoje punkty na nagrody  
+
+![System nagród i odznak](docs/screenshots/rewards.png)
+
+### Ustawienia  
+
+Użytkownik może edytować swoje dane, zarządzać ustawieniami prywatności oraz konfigurować powiadomienia przypominające o realizacji nawyków. 
+
+![Widok ustawień](docs/screenshots/settings.png)
+
+## Hotjar
+
+Hotjar zostanie wykorzystany do obserwacji sposobu korzystania z interfejsu aplikacji przez użytkowników.
+
+Dzięki mapom cieplnym i nagraniom sesji możliwe będzie sprawdzenie, które elementy są najczęściej klikane oraz gdzie użytkownicy mogą napotykać problemy. 
+
+Pozwoli to poprawić użyteczność aplikacji i zwiększyć komfort korzystania z niej. 
+
+![Panel analityczny - wydajność](docs/screenshots/hotjar-performance.png)
+
+![Panel analityczny - interakcje użytkowników](docs/screenshots/hotjar-interactions.png)
+
+![Panel analityczny - wskaźnik INP](docs/screenshots/hotjar-inp.png)
+
+![Panel analityczny - wskaźnik TTFB](docs/screenshots/hotjar-ttfb.png)
+
+## Google Analitycs
+
+Google Analytics zostanie wykorzystany do analizy zachowań użytkowników w aplikacji. Narzędzie umożliwi sprawdzenie, które ekrany są najczęściej odwiedzane, ile czasu użytkownicy spędzają w aplikacji oraz jakie funkcje cieszą się największym zainteresowaniem.
+Zebrane dane pomogą w dalszym ulepszaniu interfejsu i dostosowaniu aplikacji do potrzeb użytkowników. 
+
+
+![Google Analytics - główny panel raportów](docs/screenshots/google-analytics-home.png)
+
+![Google Analytics - aktywność w czasie rzeczywistym](docs/screenshots/google-analytics-realtime-overview.png)
+
+![Google Analytics - odwiedzane strony](docs/screenshots/google-analytics-realtime-pages.png)
